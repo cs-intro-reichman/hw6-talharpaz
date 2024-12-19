@@ -147,19 +147,16 @@ return flippedVArr;
 	 * The image is scaled (resized) to have the given width and height.
 	 */
 	public static Color[][] scaled(Color[][] image, int width, int height) {
-		int sourceH = image.length;
-		int sourceW = image[0].length;
+		double sourceH = image.length;
+		double sourceW = image[0].length;
         Color [][] ScaledArr = new Color [height][width];
 		
-		int scaledH = sourceH/height;
-		int scaledW = sourceW/width;
+		
 
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width ; j++){
-				int scaledI = (i*scaledH);
-                int scaledJ = (j*scaledW);
-				ScaledArr[i][j] = image [scaledI][scaledJ];
-		
+			
+            ScaledArr[i][j] = image[(int)(i *(sourceH/height))][(int)(j * (sourceW/width))];
 	        }
         }
 	
@@ -173,8 +170,14 @@ return flippedVArr;
 	 * values in the two input color.
 	 */
 	public static Color blend(Color c1, Color c2, double alpha) {
-		//// Replace the following statement with your code
-		return null;
+		
+		double blendRed = c1.getRed()*alpha+ c2.getRed()*(1-alpha);
+		double blendGreen = c1.getGreen()*alpha+ c2.getGreen()*(1-alpha);
+		double blendBlue = c1.getBlue()*alpha+ c2.getBlue()*(1-alpha);
+
+		Color blended = new Color((int)blendRed, (int)blendGreen, (int)blendBlue);
+
+		return blended;
 	}
 	
 	/**
@@ -184,8 +187,17 @@ return flippedVArr;
 	 * The two images must have the same dimensions.
 	 */
 	public static Color[][] blend(Color[][] image1, Color[][] image2, double alpha) {
-		//// Replace the following statement with your code
-		return null;
+		Color [][] blendedArr = new Color[image1.length][image1[0].length];
+
+		for (int i = 0; i < image1.length; i++) {
+			for (int j = 0; j < image1[0].length ; j++){
+
+				blendedArr[i][j] = blend(image1[i][j], image2[i][j], alpha);
+		
+	        }
+        }
+
+		return blendedArr;
 	}
 
 	/**
@@ -195,7 +207,16 @@ return flippedVArr;
 	 * of the source image.
 	 */
 	public static void morph(Color[][] source, Color[][] target, int n) {
-		//// Replace this comment with your code
+		if (source.length != target.length || source[0].length != target[0].length){
+			target = scaled(target, source[0].length, source.length);
+		}
+		for (int i = 0; i <= n; i++) {
+			double alpha = (double) (n -i)/n;
+			Color[][] blendedImage = Runigram.blend(source, target, alpha);
+			Runigram.display(blendedImage);
+			StdDraw.pause(500);
+			
+		}
 	}
 	
 	/** Creates a canvas for the given image. */
